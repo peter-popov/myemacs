@@ -2,7 +2,14 @@
 
 ;;load path set to folder ~/emacs for .el files
 (add-to-list 'load-path "~/emacs/modes")
+
+;; Apache PIG mode
 (load "pig-mode.el")
+
+;; IDO plugin
+(require 'ido)
+(ido-mode t)
+(setq ido-enable-flex-matching t) ;; enable fuzzy matching
 
 ;; Dont show the GNU splash screen
 (setq inhibit-startup-message t)
@@ -94,11 +101,3 @@
 ;; Set M-1 as e key for goto line
 (global-unset-key "\M-1")
 (global-set-key "\M-1" 'goto-line);; Xrefactory configuration part ;;
-;; some Xrefactory defaults can be set here
-(defvar xref-current-project nil) ;; can be also "my_project_name"
-(defvar xref-key-binding 'global) ;; can be also 'local or 'none
-(setq load-path (cons "/home/ppopov/tools/xref/emacs" load-path))
-(setq exec-path (cons "/home/ppopov/tools/xref" exec-path))
-(load "xrefactory")
-;; end of Xrefactory configuration part ;;
-(message "xrefactory loaded")
