@@ -100,4 +100,8 @@
 
 ;; Set M-1 as e key for goto line
 (global-unset-key "\M-1")
-(global-set-key "\M-1" 'goto-line);; Xrefactory configuration part ;;
+(global-set-key "\M-1" 'goto-line)
+
+;; Set C-tab to find other file
+(global-unset-key [C-tab])
+(global-set-key [C-tab] 'ff-find-other-file)
