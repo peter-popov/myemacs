@@ -2,14 +2,21 @@
 
 ;;load path set to folder ~/emacs for .el files
 (add-to-list 'load-path "~/emacs/modes")
+(add-to-list 'load-path "~/emacs/plugins")
+
 
 ;; Apache PIG mode
 (load "pig-mode.el")
 
-;; IDO plugin
+;; Google GO mode
+(load "go-mode.el")
+
+;; Plugins
 (require 'ido)
 (ido-mode t)
 (setq ido-enable-flex-matching t) ;; enable fuzzy matching
+(require 'show-wspace)
+
 
 ;; Dont show the GNU splash screen
 (setq inhibit-startup-message t)
