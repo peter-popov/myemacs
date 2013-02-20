@@ -4,18 +4,37 @@
 (add-to-list 'load-path "~/emacs/modes")
 (add-to-list 'load-path "~/emacs/plugins")
 
-
 ;; Apache PIG mode
 (load "pig-mode.el")
 
 ;; Google GO mode
 (load "go-mode.el")
 
+;; Global
+(load "gtags.el")
+(setq gtags-select-buffer-single t)
+
+
 ;; Plugins
 (require 'ido)
 (ido-mode t)
-(setq ido-enable-flex-matching t) ;; enable fuzzy matching
+(setq
+ ido-ignore-buffers '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*GTAGS")
+ ido-enable-flex-matching t         ; enable fuzzy matching
+ ido-max-prospects 6                ; don't spam my minibuffer
+ ido-confirm-unique-completion t )  ; wait for RET, even with unique completion
+
+;; Show whitespaces
 (require 'show-wspace)
+
+;;
+;; nxml mode
+;;
+(add-to-list 'auto-mode-alist
+             (cons (concat "\\." (regexp-opt '("xml" "xsd" "rng" "xslt" "svg" "rss") t) "\\'")
+                   'nxml-mode))
+(fset 'xml-mode 'nxml-mode)
+(fset 'html-mode 'nxml-mode)
 
 
 ;; Dont show the GNU splash screen
@@ -44,6 +63,16 @@
 ;; C++ mode
 (add-hook 'c++-mode-hook '(lambda()
                             (setq indent-tabs-mode nil)
+                            )
+)
+
+(add-hook 'c-mode-hook '(lambda ()
+                          (gtags-mode t)
+                          )
+)
+
+(add-hook 'c++-mode-hook '(lambda ()
+                            (gtags-mode t)
                             )
 )
 
