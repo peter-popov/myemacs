@@ -3,16 +3,33 @@
 ;;load path set to folder ~/emacs for .el files
 (add-to-list 'load-path "~/emacs/modes")
 (add-to-list 'load-path "~/emacs/plugins")
-
+(add-to-list 'load-path "~/tools/cedet-1.1/common")
 ;; Apache PIG mode
 (load "pig-mode.el")
 
 ;; Google GO mode
 (load "go-mode.el")
 
-;; Global
+;; GTUGS/Global
 (load "gtags.el")
 (setq gtags-select-buffer-single t)
+
+;; CEDET
+(load "cedet.el")
+(require 'cedet)
+(require 'semantic)
+(setq semanticdb-default-save-directory "~/.semantic")
+(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
+(semantic-load-enable-excessive-code-helpers)
+(global-srecode-minor-mode 1)            ; Enable template insertion menu
+(global-semantic-tag-folding-mode 1)
+(global-semantic-decoration-mode -1)
+(setq-mode-local c++-mode
+                 semanticdb-find-default-throttle
+                 '(project unloaded recursive)) ;; Remove 'system from the throttle
+(setq-mode-local c-mode
+                 semanticdb-find-default-throttle
+                 '(project unloaded recursive)) ;; Remove 'system from the throttle
 
 
 ;; Plugins
@@ -120,8 +137,6 @@
 
 (set-frame-size-according-to-resolution)
 
-
-(put 'dired-find-alternate-file 'disabled nil)
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
