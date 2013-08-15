@@ -1,15 +1,18 @@
 ;; Emacs config
 ;; Peter Popov
 
+(setq work-directory (file-name-directory load-file-name))
+
 ;; ==============================================================================
 ;; Modes
-(add-to-list 'load-path "~/emacs/modes")
+(add-to-list 'load-path (concat work-directory "modes") )
 (load "pig-mode.el") ; Apache PIG
 (load "go-mode.el") ; Google go language
 
 
 ;; ==============================================================================
 ;; Package managment
+;; ==============================================================================
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
@@ -82,101 +85,70 @@
 (require 'member-function)
 (setq mf--source-file-extension "cpp")
 
-
-
+;; ==============================================================================
+;; Appearance
+;; ==============================================================================
 ;; Dont show the GNU splash screen
 (setq inhibit-startup-message t)
 (setq x-select-enable-clipboard t)
-
 ;; turn on visual bell
 (setq visible-bell t)
-
 ;; get rid of the toolbar on top of the window
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 ;; Show column number at bottom of screen
 (column-number-mode 1)
-
 (set-default 'truncate-lines t)
 (setq font-lock-maximum-decoration t)
 (setq next-line-add-newlines nil)
+(setq initial-buffer-choice nil)
+(setq initial-scratch-message nil)
+(put 'scroll-left 'disabled nil)
+;;
+;; Color theme
+(add-to-list 'custom-theme-load-path (concat work-directory "themes") )
+(load-theme 'default t)
+;;
+;; Set frame size according to the screen resolution
+(if window-system
+    (progn
+      (add-to-list 'default-frame-alist (cons 'width 120))
+      ;; for the height, subtract a couple hundred pixels
+      ;; from the screen height (for panels, menubars and
+      ;; whatnot), then divide by the height of a char to
+      ;; get the height we want
+      (add-to-list 'default-frame-alist
+                   (cons 'height (/ (- (x-display-pixel-height) 0) (frame-char-height))))))
 
+
+;; ==============================================================================
+;; C & C++ mode settings
+;; ==============================================================================
 ;; C mode
-(add-hook 'c-mode-hook '(lambda()
-                          (setq indent-tabs-mode nil)
-                          )
-)
+(add-hook 'c-mode-hook '(lambda() (setq indent-tabs-mode nil)))
+(add-hook 'c-mode-hook '(lambda() (gtags-mode t)))
 
 ;; C++ mode
-(add-hook 'c++-mode-hook '(lambda()
-                            (setq indent-tabs-mode nil)
-                            )
-)
-
-(add-hook 'c-mode-hook '(lambda ()
-                          (gtags-mode t)
-                          )
-)
-
-(add-hook 'c++-mode-hook '(lambda ()
-                            (gtags-mode t)
-                            )
-)
+(add-hook 'c++-mode-hook '(lambda() (setq indent-tabs-mode nil)))
+(add-hook 'c++-mode-hook '(lambda() (gtags-mode t)))
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 ;; Code formating
 (setq c-default-style "k&r"
       c-basic-offset 4)
 (setq-default indent-tabs-mode nil)
 (setq-default show-trailing-whitespace t)
+
+
 ;;(toggle-show-tabs-show-ws)
 ;;(toggle-show-trailing-whitespace-show-ws)
 
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(column-number-mode t)
- '(initial-buffer-choice nil)
- '(initial-scratch-message nil)
- '(remote-shell-program "bash"))
 
 
 ;; Delete trailing whitespaces
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
-(defun set-frame-size-according-to-resolution ()
-  (interactive)
-  (if window-system
-  (progn
-    ;; use 120 char wide window for largeish displays
-    ;; and smaller 80 column windows for smaller displays
-    ;; pick whatever numbers make sense for you
-    (if (> (x-display-pixel-width) 1280)
-        (add-to-list 'default-frame-alist (cons 'width 120))
-      (add-to-list 'default-frame-alist (cons 'width 80)))
-    ;; for the height, subtract a couple hundred pixels
-    ;; from the screen height (for panels, menubars and
-    ;; whatnot), then divide by the height of a char to
-    ;; get the height we want
-    (add-to-list 'default-frame-alist
-                 (cons 'height (/ (+ (x-display-pixel-height) 160) (frame-char-height)))))))
-
-(set-frame-size-according-to-resolution)
-
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 94 :width normal :foundry "unknown" :family "Liberation Mono"))))
- '(font-lock-comment-face ((((class color) (min-colors 88) (background light)) (:foreground "PaleGreen4"))))
- '(font-lock-string-face ((((class color) (min-colors 88) (background light)) (:foreground "skyblue3")))))
-
-(put 'scroll-left 'disabled nil)
 
 
 ;; Set M-1 as e key for goto line
