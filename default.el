@@ -21,7 +21,7 @@
 ;; Auto load plugins on start
 ;; Taken from here: http://batsov.com/articles/2012/02/19/package-management-in-emacs-the-good-the-bad-and-the-ugly/
 (defvar prelude-packages
-  '(python ggtags yasnippet auto-complete member-function autopair )
+  '(python ggtags yasnippet auto-complete member-function autopair color-theme-solarized )
   "A list of packages to ensure are installed at launch.")
 
 (defun prelude-packages-installed-p ()
@@ -82,8 +82,8 @@
 ;;(ac-set-trigger-key "<tab>")
 ;;
 ;; member function
-(require 'member-function)
-(setq mf--source-file-extension "cpp")
+;;(require 'member-function)
+;;(setq mf--source-file-extension "cpp")
 
 ;; ==============================================================================
 ;; Appearance
@@ -107,7 +107,8 @@
 ;;
 ;; Color theme
 (add-to-list 'custom-theme-load-path (concat work-directory "themes") )
-(load-theme 'default t)
+(load-theme 'solarized-dark t)
+(set-face-attribute 'default nil :height 140)
 ;;
 ;; Set frame size according to the screen resolution
 (if window-system
@@ -148,8 +149,8 @@
 ;; Delete trailing whitespaces
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-
-
+;; No backup files
+(setq make-backup-files nil)
 
 ;; Set M-1 as e key for goto line
 (global-unset-key "\M-1")
