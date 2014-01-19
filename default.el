@@ -8,6 +8,7 @@
 (add-to-list 'load-path (concat work-directory "modes") )
 (load "pig-mode.el") ; Apache PIG
 (load "go-mode.el") ; Google go language
+(load "cuda-mode.el") ; NVIDIA CUDA mode
 
 
 ;; ==============================================================================
@@ -84,6 +85,7 @@
 ;; member function
 ;;(require 'member-function)
 ;;(setq mf--source-file-extension "cpp")
+
 
 ;; ==============================================================================
 ;; Appearance
