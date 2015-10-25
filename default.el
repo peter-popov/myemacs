@@ -6,15 +6,12 @@
 ;; ==============================================================================
 ;; Modes
 (add-to-list 'load-path (concat work-directory "modes") )
-(load "pig-mode.el") ; Apache PIG
-(load "go-mode.el") ; Google go language
-(load "cuda-mode.el") ; NVIDIA CUDA mode
-
 
 ;; ==============================================================================
 ;; Package managment
 ;; ==============================================================================
 (require 'package)
+(require 'cl-lib)
 (package-initialize)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -22,13 +19,11 @@
 ;; Auto load plugins on start
 ;; Taken from here: http://batsov.com/articles/2012/02/19/package-management-in-emacs-the-good-the-bad-and-the-ugly/
 (defvar prelude-packages
-  '(python ggtags yasnippet auto-complete member-function autopair color-theme-solarized )
+  '(python yasnippet go-mode color-theme-solarized)
   "A list of packages to ensure are installed at launch.")
 
 (defun prelude-packages-installed-p ()
-  (loop for p in prelude-packages
-        when (not (package-installed-p p)) do (return nil)
-        finally (return t)))
+   (cl-every 'package-installed-p prelude-packages))
 
 (unless (prelude-packages-installed-p)
   ;; check for new packages (package versions)
@@ -67,25 +62,6 @@
 ;; yasnippet
 (require 'yasnippet)
 (yas-global-mode 1)
-;;
-;; auto complete mod
-;; TURNED OFF BECAUSE OF ISSUE WITH YAS INTERGATION, see:
-;;  http://www.kurup.org/blog/2012/10/15/emacs-autocomplete-stumbles-on-yasnippet/
-;;; should be loaded after yasnippet so that they can work together
-;;(require 'auto-complete-config)
-;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-;;(delq 'ac-source-yasnippet ac-sources)
-;;(ac-config-default)
-;;; set the trigger key so that it can work together with yasnippet on tab key,
-;;; if the word exists in yasnippet, pressing tab will cause yasnippet to
-;;; activate, otherwise, auto-complete will
-;;(ac-set-trigger-key "TAB")
-;;(ac-set-trigger-key "<tab>")
-;;
-;; member function
-;;(require 'member-function)
-;;(setq mf--source-file-extension "cpp")
-
 
 ;; ==============================================================================
 ;; Appearance
@@ -111,18 +87,6 @@
 (add-to-list 'custom-theme-load-path (concat work-directory "themes") )
 (load-theme 'solarized-dark t)
 (set-face-attribute 'default nil :height 140)
-;;
-;; Set frame size according to the screen resolution
-(if window-system
-    (progn
-      (add-to-list 'default-frame-alist (cons 'width 120))
-      ;; for the height, subtract a couple hundred pixels
-      ;; from the screen height (for panels, menubars and
-      ;; whatnot), then divide by the height of a char to
-      ;; get the height we want
-      (add-to-list 'default-frame-alist
-                   (cons 'height (/ (- (x-display-pixel-height) 0) (frame-char-height))))))
-
 
 ;; ==============================================================================
 ;; C & C++ mode settings
@@ -142,11 +106,8 @@
 (setq-default indent-tabs-mode nil)
 (setq-default show-trailing-whitespace t)
 
-
 ;;(toggle-show-tabs-show-ws)
 ;;(toggle-show-trailing-whitespace-show-ws)
-
-
 
 ;; Delete trailing whitespaces
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
