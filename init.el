@@ -1,56 +1,48 @@
-;; Emacs config
 ;; Peter Popov
 
-(setq work-directory (file-name-directory load-file-name))
-
-;; ==============================================================================
-;; Modes
-(add-to-list 'load-path (concat work-directory "modes") )
-
+(add-to-list 'load-path (concat user-emacs-directory
+        (convert-standard-filename "modules")))
 ;; ==============================================================================
 ;; Package managment
 ;; ==============================================================================
 (require 'package)
 (require 'cl-lib)
 (package-initialize)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t )
 
-;; Auto load plugins on start
-;; Taken from here: http://batsov.com/articles/2012/02/19/package-management-in-emacs-the-good-the-bad-and-the-ugly/
-(defvar prelude-packages
-  '(python yasnippet go-mode color-theme-solarized)
+;; Auto load packages on start(taken from emacs Prelude)
+(defvar my-default-packages
+  '(python
+    yasnippet
+    go-mode
+    solarized-theme
+    projectile
+    helm
+    popup
+    smart-mode-line
+    )
   "A list of packages to ensure are installed at launch.")
 
-(defun prelude-packages-installed-p ()
-   (cl-every 'package-installed-p prelude-packages))
+(defun my-packages-installed-p ()
+   (cl-every 'package-installed-p my-default-packages))
 
-(unless (prelude-packages-installed-p)
+(unless (my-packages-installed-p)
   ;; check for new packages (package versions)
-  (message "%s" "Emacs Prelude is now refreshing its package database...")
+  (message "%s" "Refreshing package database...")
   (package-refresh-contents)
   (message "%s" " done.")
   ;; install the missing packages
-  (dolist (p prelude-packages)
+  (dolist (p my-default-packages)
     (when (not (package-installed-p p))
       (message "%s: %s" "Installing" p)
       (package-install p))))
 
-(provide 'prelude-packages)
+(provide 'my-default-packages)
 
 
 ;; ==============================================================================
 ;; Plugins set up
 ;; ==============================================================================
-;;
-;;IDO
-(require 'ido)
-(ido-mode t)
-(setq
- ido-ignore-buffers '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*GTAGS")
- ido-enable-flex-matching t         ; enable fuzzy matching
- ido-max-prospects 6                ; don't spam my minibuffer
- ido-confirm-unique-completion t )  ; wait for RET, even with unique completion
 ;;
 ;; nxml mode
 (add-to-list 'auto-mode-alist
@@ -58,10 +50,20 @@
                    'nxml-mode))
 (fset 'xml-mode 'nxml-mode)
 (fset 'html-mode 'nxml-mode)
+
 ;;
 ;; yasnippet
 (require 'yasnippet)
 (yas-global-mode 1)
+
+;; Prjectile
+;; Use only for some languages
+(projectile-global-mode)
+(setq projectile-indexing-method 'native)
+
+;; Helm
+(helm-mode 1)
+(helm-autoresize-mode 1)
 
 ;; ==============================================================================
 ;; Appearance
@@ -84,9 +86,8 @@
 (put 'scroll-left 'disabled nil)
 ;;
 ;; Color theme
-(add-to-list 'custom-theme-load-path (concat work-directory "themes") )
 (load-theme 'solarized-dark t)
-(set-face-attribute 'default nil :height 140)
+(set-face-attribute 'default nil :height 130)
 
 ;; ==============================================================================
 ;; C & C++ mode settings
@@ -122,3 +123,21 @@
 ;; Set C-tab to find other file
 (global-unset-key [C-tab])
 (global-set-key [C-tab] 'ff-find-other-file)
+
+;; Smart line with cow powers!
+(setq sml/no-confirm-load-theme t)
+(sml/setup)
+(setq sml/theme 'respectful)
+
+;; ==============================================================================
+;; RTags
+;; ==============================================================================
+(require 'rtags)
+
+(define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
+(define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))
+(define-key c-mode-base-map (kbd "M-;") (function rtags-find-file))
+(define-key c-mode-base-map (kbd "C-.") (function rtags-find-symbol))
+(define-key c-mode-base-map (kbd "C-,") (function rtags-find-references))
+(define-key c-mode-base-map (kbd "C-<") (function rtags-find-virtuals-at-point))
+(define-key c-mode-base-map (kbd "M-i") (function rtags-imenu))
