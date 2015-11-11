@@ -20,6 +20,7 @@
     helm
     popup
     smart-mode-line
+    magit
     )
   "A list of packages to ensure are installed at launch.")
 
@@ -60,10 +61,15 @@
 ;; Use only for some languages
 (projectile-global-mode)
 (setq projectile-indexing-method 'native)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 
 ;; Helm
 (helm-mode 1)
 (helm-autoresize-mode 1)
+
+;; Magit
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "s-g") 'magit-dispatch-popup)
 
 ;; ==============================================================================
 ;; Appearance
@@ -120,10 +126,6 @@
 (global-unset-key "\M-1")
 (global-set-key "\M-1" 'goto-line)
 
-;; Set C-tab to find other file
-(global-unset-key [C-tab])
-(global-set-key [C-tab] 'ff-find-other-file)
-
 ;; Smart line with cow powers!
 (setq sml/no-confirm-load-theme t)
 (sml/setup)
@@ -139,5 +141,3 @@
 (define-key c-mode-base-map (kbd "M-;") (function rtags-find-file))
 (define-key c-mode-base-map (kbd "C-.") (function rtags-find-symbol))
 (define-key c-mode-base-map (kbd "C-,") (function rtags-find-references))
-(define-key c-mode-base-map (kbd "C-<") (function rtags-find-virtuals-at-point))
-(define-key c-mode-base-map (kbd "M-i") (function rtags-imenu))
