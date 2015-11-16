@@ -21,6 +21,7 @@
     popup
     smart-mode-line
     magit
+    git-gutter
     )
   "A list of packages to ensure are installed at launch.")
 
@@ -67,9 +68,14 @@
 (helm-mode 1)
 (helm-autoresize-mode 1)
 
-;; Magit
+;; Magit and git-gutter
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "s-g") 'magit-dispatch-popup)
+(global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
+
+;; Clang format - todo: need proper path?!!!
+(load "/usr/share/emacs/site-lisp/clang-format-3.6/clang-format.el")
+(global-set-key (kbd "C-M-;") 'clang-format-region)
 
 ;; ==============================================================================
 ;; Appearance
@@ -93,8 +99,9 @@
 ;;
 ;; Color theme
 (load-theme 'solarized-dark t)
-(set-face-attribute 'default nil :height 130)
-
+(when (member "DejaVu Sans Mono" (font-family-list))
+  (set-face-attribute 'default nil :font "DejaVu Sans Mono"))
+(set-face-attribute 'default nil :height 105)
 ;; ==============================================================================
 ;; C & C++ mode settings
 ;; ==============================================================================
@@ -115,12 +122,13 @@
 
 ;;(toggle-show-tabs-show-ws)
 ;;(toggle-show-trailing-whitespace-show-ws)
+(scroll-bar-mode -1)
 
-;; Delete trailing whitespaces
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; disable backup and auto-save
+(setq backup-inhibited t)
+(setq auto-save-default nil)
 
-;; No backup files
-(setq make-backup-files nil)
+(delete-selection-mode 1)
 
 ;; Set M-1 as e key for goto line
 (global-unset-key "\M-1")
