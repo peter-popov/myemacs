@@ -22,6 +22,7 @@
     smart-mode-line
     magit
     git-gutter
+    multiple-cursors
     )
   "A list of packages to ensure are installed at launch.")
 
@@ -40,6 +41,34 @@
       (package-install p))))
 
 (provide 'my-default-packages)
+
+;; ==============================================================================
+;; Appearance
+;; ==============================================================================
+;; Dont show the GNU splash screen
+(setq inhibit-startup-message t)
+(setq x-select-enable-clipboard t)
+;; turn on visual bell
+(setq visible-bell t)
+;; get rid of the toolbar on top of the window
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+(scroll-bar-mode -1)
+;; Show column number at bottom of screen
+(column-number-mode 1)
+(set-default 'truncate-lines t)
+(setq font-lock-maximum-decoration t)
+(setq next-line-add-newlines nil)
+(setq initial-buffer-choice nil)
+(setq initial-scratch-message nil)
+(setq-default cursor-type 'bar) 
+(put 'scroll-left 'disabled nil)
+;;
+;; Color theme
+(load-theme 'solarized-dark t)
+(when (member "DejaVu Sans Mono" (font-family-list))
+  (set-face-attribute 'default nil :font "DejaVu Sans Mono"))
+(set-face-attribute 'default nil :height 105)
 
 
 ;; ==============================================================================
@@ -73,46 +102,26 @@
 (global-set-key (kbd "s-g") 'magit-dispatch-popup)
 (global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
 
+;;
 ;; Clang format - todo: need proper path?!!!
 (load "/usr/share/emacs/site-lisp/clang-format-3.6/clang-format.el")
-(global-set-key (kbd "C-M-;") 'clang-format-region)
+(eval-after-load 'c++-mode
+  '(define-key c++-mode-map (kbd "C-M-;") 'clang-format-region))
 
-;; ==============================================================================
-;; Appearance
-;; ==============================================================================
-;; Dont show the GNU splash screen
-(setq inhibit-startup-message t)
-(setq x-select-enable-clipboard t)
-;; turn on visual bell
-(setq visible-bell t)
-;; get rid of the toolbar on top of the window
-(tool-bar-mode 0)
-(menu-bar-mode 0)
-;; Show column number at bottom of screen
-(column-number-mode 1)
-(set-default 'truncate-lines t)
-(setq font-lock-maximum-decoration t)
-(setq next-line-add-newlines nil)
-(setq initial-buffer-choice nil)
-(setq initial-scratch-message nil)
-(put 'scroll-left 'disabled nil)
 ;;
-;; Color theme
-(load-theme 'solarized-dark t)
-(when (member "DejaVu Sans Mono" (font-family-list))
-  (set-face-attribute 'default nil :font "DejaVu Sans Mono"))
-(set-face-attribute 'default nil :height 105)
+;; go fmt
+(eval-after-load 'go-mode
+  '(define-key go-mode-map (kbd "C-M-;") 'gofmt))
+
+
 ;; ==============================================================================
 ;; C & C++ mode settings
 ;; ==============================================================================
-;; C mode
-(add-hook 'c-mode-hook '(lambda() (setq indent-tabs-mode nil)))
-(add-hook 'c-mode-hook '(lambda() (gtags-mode t)))
-
 ;; C++ mode
 (add-hook 'c++-mode-hook '(lambda() (setq indent-tabs-mode nil)))
-(add-hook 'c++-mode-hook '(lambda() (gtags-mode t)))
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.cc\\'" . c++-mode))
 
 ;; Code formating
 (setq c-default-style "k&r"
@@ -120,9 +129,6 @@
 (setq-default indent-tabs-mode nil)
 (setq-default show-trailing-whitespace t)
 
-;;(toggle-show-tabs-show-ws)
-;;(toggle-show-trailing-whitespace-show-ws)
-(scroll-bar-mode -1)
 
 ;; disable backup and auto-save
 (setq backup-inhibited t)
@@ -139,13 +145,15 @@
 (sml/setup)
 (setq sml/theme 'respectful)
 
-;; ==============================================================================
+;; 
 ;; RTags
-;; ==============================================================================
 (require 'rtags)
-
 (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
 (define-key c-mode-base-map (kbd "M-,") (function rtags-find-references-at-point))
 (define-key c-mode-base-map (kbd "M-;") (function rtags-find-file))
 (define-key c-mode-base-map (kbd "C-.") (function rtags-find-symbol))
 (define-key c-mode-base-map (kbd "C-,") (function rtags-find-references))
+
+;;
+;; Multiple cursors
+(global-set-key (kbd "C-d") 'mc/mark-next-like-this)
