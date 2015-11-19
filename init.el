@@ -1,7 +1,9 @@
 ;; Peter Popov
 
-(add-to-list 'load-path (concat user-emacs-directory
+(defvar my-modules (concat user-emacs-directory
         (convert-standard-filename "modules")))
+
+(add-to-list 'load-path my-modules)
 ;; ==============================================================================
 ;; Package managment
 ;; ==============================================================================
@@ -157,3 +159,5 @@
 ;;
 ;; Multiple cursors
 (global-set-key (kbd "C-d") 'mc/mark-next-like-this)
+
+(load-file (concat my-modules "/robot-mode.el"))
