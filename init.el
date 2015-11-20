@@ -20,6 +20,7 @@
     solarized-theme
     projectile
     helm
+    helm-projectile
     popup
     smart-mode-line
     magit
@@ -92,12 +93,14 @@
 ;; Prjectile
 ;; Use only for some languages
 (projectile-global-mode)
-(setq projectile-indexing-method 'native)
-(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+;; @todo: I really wanted it to be s-p, but this works poorly wiht ubuntu
+(define-key projectile-mode-map (kbd "s-[") 'projectile-command-map)
 
 ;; Helm
 (helm-mode 1)
 (helm-autoresize-mode 1)
+(require 'helm-projectile)
+(helm-projectile-on)
 
 ;; Magit and git-gutter
 (global-set-key (kbd "C-x g") 'magit-status)
@@ -160,4 +163,6 @@
 ;; Multiple cursors
 (global-set-key (kbd "C-d") 'mc/mark-next-like-this)
 
+;;
+;; Load robot mode
 (load-file (concat my-modules "/robot-mode.el"))
