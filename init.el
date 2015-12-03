@@ -26,6 +26,7 @@
     magit
     git-gutter
     multiple-cursors
+    flymake
     )
   "A list of packages to ensure are installed at launch.")
 
