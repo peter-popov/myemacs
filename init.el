@@ -110,9 +110,8 @@
 
 ;;
 ;; Clang format - todo: need proper path?!!!
-(load "/usr/share/emacs/site-lisp/clang-format-3.6/clang-format.el")
-(eval-after-load 'c++-mode
-  '(define-key c++-mode-map (kbd "C-M-;") 'clang-format-region))
+(load "/usr/share/emacs/site-lisp/clang-format-3.8/clang-format.el")
+(global-set-key (kbd "C-M-;") 'clang-format-region)
 
 ;;
 ;; go fmt
@@ -159,11 +158,24 @@
 (define-key c-mode-base-map (kbd "M-;") (function rtags-find-file))
 (define-key c-mode-base-map (kbd "C-.") (function rtags-find-symbol))
 (define-key c-mode-base-map (kbd "C-,") (function rtags-find-references))
+(setq rtags-autostart-diagnostics t)
+(setq rtags-process-flags "-j6")
+(require 'rtags-helm)
+(setq rtags-use-helm t)
+(rtags-enable-standard-keybindings c-mode-base-map "\C-xr")
+(add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
+(add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
 
 ;;
 ;; Multiple cursors
 (global-set-key (kbd "C-d") 'mc/mark-next-like-this)
 
 ;;
+;; go fmt
+(eval-after-load 'c++-mode
+  '(define-key c++mode-map (kbd "C-d") 'mc/mark-next-like-this))
+
+;;
 ;; Load robot mode
 (load-file (concat my-modules "/robot-mode.el"))
+
